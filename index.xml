@@ -1,0 +1,96 @@
+<craft>
+    <parameter name="width" type="int" default="15"/>
+    <parameter name="length" type="int" default="20"/>
+    <parameter name="height" type="int" default="2"/>
+    <parameter name="type" type="int" default="2"/>
+    <parameter name="indent" type="int" default="1"/>
+    <script type="text/openjscad">
+
+        function main() {
+            var width = params.width;
+            var length = params.length;
+            var height = params.height;
+            var type = params.type;
+            var indent = params.indent;
+            
+            // handles different tag types
+            if (type == 1) { type = 4; }
+            
+            else if (type == 2) { type = 6; }
+            
+            else { type = 100; }
+
+            // handles minimum values
+            if (width < 8) { width = 8; }
+            if (length < 5) { length = 5; }
+            
+            // assembled tag
+            return difference(
+                body(),
+                hole()
+            );
+            
+            // tag components
+            function body() {
+                var b, top, topDiff, indentDiff;
+            
+                // parts
+                b = cube({
+                    size: [width, length, height],
+                    round: false,
+                    center: true
+                });
+                
+                top = cylinder({
+                    r: width / 2,
+                    h: height,
+                    fn: type,
+                    center: true
+                });
+                
+                topDiff = cube({
+                    size: [width, width, height],
+                    center: true
+                });
+
+                // transformations
+                top = top.translate([0, length / 2, 0]);
+                top = difference(
+                    top,
+                    topDiff.translate([0, -width/2, 0])
+                );
+                
+                b = union(top, b);
+
+                // handles indent parameter
+                if (indent) {
+                    indentDiff = cube({
+                        size: [width - 2, length - 2, height],
+                        center: true
+                    });
+                    
+                    b = difference(
+                        b,
+                        indentDiff.translate([0, 0, height - 1])
+                    );
+                }
+                
+                return b;
+            }
+            
+            function hole() {
+                var h;
+                
+                // parts
+                h = cylinder({
+                    r: 1,
+                    h: height * 2,
+                    center: true
+                }).translate([0, (length / 2) + (width / 4), -1]);
+                
+                return h;
+            }
+        }
+        
+    </script>
+</craft>
