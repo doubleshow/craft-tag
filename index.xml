@@ -24,7 +24,7 @@
             if (width < 8) { width = 8; }
             if (length < 5) { length = 5; }
             
-            // assembled tag
+            // assembled tag            
             return difference(
                 body(),
                 hole()
@@ -93,4 +93,5 @@
         }
         
     </script>
+    <content></content>
 </craft>
